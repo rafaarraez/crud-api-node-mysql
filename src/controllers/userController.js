@@ -1,6 +1,6 @@
 const controller = {};
 
-controller.list = (req, res) => {
+controller.users = (req, res) => {
     req.getConnection((err, conn) => {
         conn.query('SELECT * FROM usurarios', (err, users) => {
             if (err) {
@@ -24,7 +24,14 @@ controller.add = (req, res) => {
 };
 
 controller.delete = (req, res) => {
+    const { id } = req.params;
 
+    req.getConnection((err, conn) => {
+        conn.query('DELETE FROM usurarios WHERE id = ?', [id], (err, users) => {
+            console.log(users);
+            res.send('works');
+        });
+    });
 };
 
 module.exports = controller;
