@@ -6,7 +6,6 @@ controller.users = (req, res) => {
             if (err) {
                 res.json(err);
             }
-            console.log(users);
             res.json(users);
         });
     });
@@ -14,21 +13,20 @@ controller.users = (req, res) => {
 
 controller.add = (req, res) => {
     const data = req.body;
+    console.log(data);
+
     req.getConnection((err, conn) => {
-        conn.query('INSERT INTO usurarios SET ?', [data], (err, users) => {
-            console.log(users);
-            res.send('works');
+        conn.query('INSERT INTO usurarios SET ? ', [data], (err, users) => {
+            res.redirect('/api/users');
         });
     });
 };
 
 controller.delete = (req, res) => {
     const { id } = req.params;
-
     req.getConnection((err, conn) => {
-        conn.query('DELETE FROM usurarios WHERE id = ?', [id], (err, users) => {
-            console.log(users);
-            res.send('works');
+        conn.query('DELETE FROM usurarios WHERE id = ? ', [id], (err, users) => {
+            res.redirect('/api/users');
         });
     });
 };
@@ -36,8 +34,9 @@ controller.delete = (req, res) => {
 controller.edit = (req, res) => {
     const { id } = req.params
     req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM usurarios WHERE id = ?', [id], (err, user) => {
-            res.json(user);
+        conn.query('SELECT * FROM usurarios WHERE id = ? ', [id], (err, user) => {
+            res.json(user[0]);
+
         });
     });
 };
@@ -46,8 +45,12 @@ controller.saveEdit = (req, res) => {
     const { id } = req.params
     const newData = req.body;
     req.getConnection((err, conn) => {
-        conn.query('UPDATE usurarios SET ? WHERE id = ?', [newData, id], (err, user) => {
-            res.json(user);
+        conn.query('UPDATE usurarios SET ? WHERE id = ? ', [newData, id], (err, user) => {
+            console.log(newData);
+            if (err) {
+                console.log(err);
+            }
+            res.redirect('/api/users');
         });
     });
 };
